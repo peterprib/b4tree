@@ -1,11 +1,11 @@
 
 
-# b+tree
+# bplustree
 Implements btree plus logic
 
 
 ## Usage
-
+const BPlusTree=require('./bplustree');
 var tree = new BPlusTree({order: 10});
 tree.insert(key,value);
 tree.upsert(key,value);

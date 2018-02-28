@@ -1,5 +1,5 @@
 	/*eslint-disable unknown-require, no-unused-vars*/
-	const BPlusTree=require('../b+tree');
+	const BPlusTree=require('../bplustree');
 	function akey(i) {return "key"+i;}
 	var order = 10;
 	var num = 500000;

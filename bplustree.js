@@ -1,3 +1,4 @@
+/*eslint-disable no-redeclare, no-undef-expression, no-constant-condition*/
 if (typeof Object.assign != 'function') {
   // Must be writable: true, enumerable: false, configurable: true
   Object.defineProperty(Object, "assign", {
@@ -59,7 +60,7 @@ if (!String.prototype.repeat) {
 	      rpt += str;
 	    }
 	    return rpt;
-	  }
+	  };
 	}
 
 function LeafNode (order) {
@@ -70,7 +71,10 @@ function LeafNode (order) {
 	this.prevNode = null;
 	this.data = [];
 }
-LeafNode.prototype.getLeaf=function(k) {return this;}
+/**
+ * @callback
+ */
+LeafNode.prototype.getLeaf=function(k) {return this;};
 LeafNode.prototype.getData=function(k,f){
 		for(var i=0,il=this.data.length; i<il; i++){
 			if(this.data[i].key === k) {
@@ -98,7 +102,7 @@ LeafNode.prototype.between=function(s,e,f){
 					n=n.nextNode;
 					i=0;
 					il=n.data.length;
-				}else{return};
+				}else{return;}
 			}
 		}
 	};
@@ -123,13 +127,13 @@ LeafNode.prototype.upsert=function(key,value,match,noMatch){
 		var i=0,il=this.data.length;
 		for(;i<il;i++){
 			if(this.data[i].key === key) {
-				if(match) {match(k);}
+				if(match) {match(key);}
 				this.data[i].value = value;
 				return null;
 			}
 			if(this.data[i].key > key) {break;}
 		}
-		if(noMatch) {noMatch(k);}
+		if(noMatch) {noMatch(key);}
 		if(this.data[i]) {this.data.splice(i, 0, {"key": key, "value": value});}
 		else {this.data.push({"key": key, "value": value});}
 		if(this.data.length > this.order) {
@@ -184,10 +188,9 @@ LevelNode.prototype.insert=function(key, node1, node2){
 				return this.split();
 			}
 			return null;
-		}else{
-			this.data=[node1,key,node2];
-			return this;
 		}
+		this.data=[node1,key,node2];
+		return this;
 	};
 LevelNode.prototype.walk=function(f,fb,fa){
 		for(var i=0,il=this.data.length;i<il;i+=2){
@@ -217,10 +220,10 @@ BPlusTree.prototype.setOptions=function(options){
 	this.options=Object.assign(this.options, options);
 	};
 BPlusTree.prototype.insert=function(k,v){
-		this.root=this.root.getLeaf(k).upsert(k,v,function(k){Error("key already exists, key: "+k)})||this.root;
+		this.root=this.root.getLeaf(k).upsert(k,v,function(k){Error("key already exists, key: "+k);})||this.root;
 	};
 BPlusTree.prototype.update=function(k,v){
-		this.root=this.root.getLeaf(k).upsert(k,v,null,function(k){Error("key not found, key: "+k)})||this.root;
+		this.root=this.root.getLeaf(k).upsert(k,v,null,function(k){Error("key not found, key: "+k);})||this.root;
 	};
 BPlusTree.prototype.upsert=function(k,v){
 		this.root=this.root.getLeaf(k).upsert(k,v)||this.root;
@@ -235,13 +238,19 @@ BPlusTree.prototype.walk=function(f,fb,fa){
 		if(!(f||fb||fa)) {
 			if(console.group) {
 				var fb=function(k){console.log("level key = "+k);console.group();}
-					,fa=function(k){console.groupend();}
-					,f=function(n){console.log(n.key+"->"+n.value)};
+					,/**
+					 * @callback
+					 */
+					fa=function(k){console.groupend();}
+					,f=function(n){console.log(n.key+"->"+n.value);};
 			} else {
 				var level=0
-					,fb=function(k){console.log('  '.repeat(level++)+"level key = "+k)}
-				,fa=function(k){level--;}
-					,f=function(n){console.log('  '.repeat(level)+n.key+"->"+n.value)};
+					,fb=function(k){console.log('  '.repeat(level++)+"level key = "+k);}
+				,/**
+				 * @callback
+				 */
+				fa=function(k){level--;}
+					,f=function(n){console.log('  '.repeat(level)+n.key+"->"+n.value);};
 			}
 		}
 		this.root.walk(f,fb,fa);
