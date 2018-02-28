@@ -1,0 +1,9 @@
+{
+  "name": "b+tree",
+  "version": "0.0.1",
+  "scripts": {
+    "test": "node performance.js"
+  },
+  "dependencies": {
+  }
+}
